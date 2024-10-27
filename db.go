@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"log"
@@ -18,4 +18,5 @@ func InitDB() {
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
 	}
+
 }
