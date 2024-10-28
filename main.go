@@ -12,7 +12,6 @@ import (
 
 func main() {
 	database.InitDB()
-	database.DB.AutoMigrate(&messagesService.Message{})
 
 	repo := messagesService.NewMessageRepository(database.DB)
 	service := messagesService.NewService(repo)
