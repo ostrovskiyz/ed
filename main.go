@@ -1,13 +1,15 @@
 package main
 
 import (
-	"net/http"
+	"log"
 
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	"projectgo/internal/database"
 	"projectgo/internal/handlers"
 	"projectgo/internal/messagesService"
+	"projectgo/internal/web/messages"
 )
 
 func main() {
@@ -17,11 +19,16 @@ func main() {
 	service := messagesService.NewService(repo)
 
 	handler := handlers.NewHandler(service)
-	router := mux.NewRouter()
 
-	router.HandleFunc("/api/get", handler.GetMessagesHandler).Methods("GET")
-	router.HandleFunc("/api/post", handler.PostMessagesHandler).Methods("POST")
-	router.HandleFunc("/api/delete/{id}", handler.DeleteMessagesHandler).Methods("DELETE")
-	router.HandleFunc("/api/patch/{id}", handler.PatchMessagesHandler).Methods("PATCH")
-	http.ListenAndServe(":8080", router)
+	// Инициализируем echo
+	e := echo.New()
+
+	// используем Logger и Recover
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	messages.RegisterHandlers(e, handler)
+	if err := e.Start(":8080"); err != nil {
+		log.Fatalf("failed to start with err: %v", err)
+	}
 }

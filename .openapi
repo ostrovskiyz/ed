@@ -1,0 +1,7 @@
+package: messages
+generate:
+  strict-server: true
+  echo-server: true
+  models: true
+output: internal/web/messages/api.gen.go
+input: openapi/openapi.yaml

@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  title: Message API
+  version: 1.0.0
+  description: API for managing messages.
+
+servers:
+  - url: http://localhost:8080/api
+
+paths:
+  /get:
+    get:
+      summary: Get all messages
+      operationId: getMessages
+      responses:
+        '200':
+          description: A list of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '500':
+          description: Internal server error
+
+  /post:
+    post:
+      summary: Create a new message
+      operationId: postMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageInput'
+      responses:
+        '201':
+          description: Message created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+  /delete/{id}:
+    delete:
+      summary: Delete a message by ID
+      operationId: deleteMessage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '204':
+          description: Message deleted successfully
+        '400':
+          description: Invalid ID
+        '500':
+          description: Internal server error
+
+  /patch/{id}:
+    patch:
+      summary: Update a message by ID
+      operationId: patchMessage
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageInput'
+      responses:
+        '200':
+          description: Message updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid ID or input
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        text:
+          type: string
+          example: "This is a sample message."
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    MessageInput:
+      type: object
+      properties:
+        text:
+          type: string
+          example: "This is a sample message."
+      required:
+        - text
